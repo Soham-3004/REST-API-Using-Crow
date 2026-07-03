@@ -59,16 +59,19 @@ int main()
         return crow::response{x};
     });
 
-    crow::json::wvalue userJSON;
-    int i=0;
-    for(const auto& [id, user] : users){
-        crow::json::wvalue obj;
-        obj["id"] = user.id;
-        obj["name"] = user.name;
-        obj["role"] = user.role;
-        userJSON[i++] = std::move(obj);
-    }
-    CROW_LOG_INFO << userJSON.dump(); 
+    CROW_ROUTE(app,"/users")
+    ([&users](){
+        crow::json::wvalue userJSON;
+        int i=0;
+        for(const auto& [id, user] : users){
+            crow::json::wvalue obj;
+            obj["id"] = user.id;
+            obj["name"] = user.name;
+            obj["role"] = user.role;
+            userJSON[i++] = std::move(obj);
+        }
+        return userJSON;
+    });
 
     app.port(18080).multithreaded().run();
 }
