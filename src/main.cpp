@@ -1,11 +1,7 @@
 #include <crow.h>
 #include <unordered_map>
-
-struct Users{
-    int id;
-    std::string name;
-    std::string role;
-};
+#include "user.h"
+#include "json_utils.h"
 
 int main()
 {
@@ -51,12 +47,7 @@ int main()
             return crow ::response(404,"User not found");
         }
 
-        crow::json::wvalue x;
-        x["id"] = it->second.id;
-        x["name"] = it->second.name;
-        x["role"] = it->second.role;
-
-        return crow::response{x};
+        return crow::response{userToJson(it->second)};
     });
     //Returning entire database as an array of json
     CROW_ROUTE(app,"/users")
@@ -64,11 +55,7 @@ int main()
         crow::json::wvalue userJSON;
         int i=0;
         for(const auto& [id, user] : users){
-            crow::json::wvalue obj;
-            obj["id"] = user.id;
-            obj["name"] = user.name;
-            obj["role"] = user.role;
-            userJSON[i++] = std::move(obj);
+            userJSON[i++] = userToJson(user);
         }
         return userJSON;
     });
@@ -87,7 +74,7 @@ int main()
         user.role = body["role"].s();
         users[user.id] = user;
 
-        return crow::response(201);
+        return crow::response{userToJson(user)};
     });
     //updating database with PUT which is a Idempotent method
      CROW_ROUTE(app,"/users/<int>").methods(crow::HTTPMethod::Put)
@@ -104,13 +91,10 @@ int main()
 
         it->second.name = body["name"].s();
         it->second.role = body["role"].s();
-        crow::json::wvalue x;
-        x["id"] = it->second.id;
-        x["name"] = it->second.name;
-        x["role"] = it->second.role;
-        return crow::response{x};
-     });
 
+        return crow::response{userToJson(it->second)};
+     });
+     //Delete
      CROW_ROUTE(app,"/users/<int>").methods(crow::HTTPMethod::Delete)
      ([&users](int id){
         auto it = users.find(id);

@@ -4,6 +4,12 @@ project(RestApiLearning)
 
 set(CMAKE_CXX_STANDARD 17)
 
-include_directories(/home/soham/Crow/include)
-
-add_executable(rest_api main.cpp)
+add_executable(
+    rest_api
+    src/main.cpp
+    src/json_utils.cpp
+)
+target_include_directories(rest_api PRIVATE
+    include
+    /home/soham/Crow/include
+)
