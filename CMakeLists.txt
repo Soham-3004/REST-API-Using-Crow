@@ -8,6 +8,7 @@ add_executable(
     rest_api
     src/main.cpp
     src/json_utils.cpp
+    src/routes.cpp
 )
 target_include_directories(rest_api PRIVATE
     include
