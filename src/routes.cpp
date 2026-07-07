@@ -1,7 +1,8 @@
 #include "routes.h"
 #include "json_utils.h"
+#include "cors_middleware.h"
 
-void registerRoutes(crow::SimpleApp& app,std::map<int, Users>& users,int& nextID)
+void registerRoutes(crow::App<cors_middleware>& app,std::map<int, Users>& users,int& nextID)
 {
     //********    Phase 1 Static Routes        ********//
     //simple get routes

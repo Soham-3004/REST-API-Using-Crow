@@ -2,11 +2,11 @@
 
 #include <crow.h>
 #include <map>
-
+#include "cors_middleware.h"
 #include "user.h"
 
 void registerRoutes(
-    crow::SimpleApp& app,
+    crow::App<cors_middleware>& app,
     std::map<int, Users>& users,
     int& nextID
 );

@@ -3,10 +3,11 @@
 #include "user.h"
 #include "json_utils.h"
 #include "routes.h"
+#include "cors_middleware.h"
 
 int main()
 {
-    crow::SimpleApp app;
+    crow::App<cors_middleware> app;
 
     //Maps to created a sorted in memory database
     std::map<int,Users> users;
