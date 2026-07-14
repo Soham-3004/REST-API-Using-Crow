@@ -28,7 +28,13 @@ function createUserRow(user){
         const idCell = document.createElement("td");
         const nameCell = document.createElement("td");
         const roleCell = document.createElement("td");
+        const deleteCell = document.createElement("td");
 
+        //Buttons
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteCell.appendChild(deleteBtn);
+        
         //add data
         idCell.textContent = user.id;
         nameCell.textContent = user.name;
@@ -38,9 +44,13 @@ function createUserRow(user){
         row.appendChild(idCell);
         row.appendChild(nameCell);
         row.appendChild(roleCell);  
+        row.appendChild(deleteCell);
 
         //finally append each table row to the table body 
-        tableBody.appendChild(row);      
+        tableBody.appendChild(row);  
+        
+        //Buttons functionality
+        deleteBtn.addEventListener("click",()=>handleDeleteUser(user.id));
 }
 
 function addUser(user){
@@ -48,6 +58,16 @@ function addUser(user){
         {method: "POST",
         headers: {"Content-Type": "application/json"},
         body:JSON.stringify(user)
+        });
+}
+
+function handleDeleteUser(id){
+    return fetch(`http://localhost:18080/users/${id}`, 
+        {
+            method: "DELETE",
+        })
+        .then(()=>{
+            fetchUsers();
         });
 }
 
