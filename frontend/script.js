@@ -29,11 +29,16 @@ function createUserRow(user){
         const nameCell = document.createElement("td");
         const roleCell = document.createElement("td");
         const deleteCell = document.createElement("td");
+        const editCell = document.createElement("td");
 
         //Buttons
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
         deleteCell.appendChild(deleteBtn);
+
+        const editBtn = document.createElement("button");
+        editBtn.textContent = "Edit";
+        editCell.appendChild(editBtn);
         
         //add data
         idCell.textContent = user.id;
@@ -45,12 +50,14 @@ function createUserRow(user){
         row.appendChild(nameCell);
         row.appendChild(roleCell);  
         row.appendChild(deleteCell);
+        row.appendChild(editCell);
 
         //finally append each table row to the table body 
         tableBody.appendChild(row);  
         
         //Buttons functionality
-        deleteBtn.addEventListener("click",()=>handleDeleteUser(user.id));
+        deleteBtn.onclick = ()=>handleDeleteUser(user.id);
+        editBtn.onclick = ()=>handleEditUser(user,nameCell,roleCell,editBtn,deleteBtn);
 }
 
 function addUser(user){
@@ -58,6 +65,48 @@ function addUser(user){
         {method: "POST",
         headers: {"Content-Type": "application/json"},
         body:JSON.stringify(user)
+        });
+}
+
+function handleEditUser(user,nameCell,roleCell,editBtn,deleteBtn){
+    const nameInput = document.createElement("input");
+    const roleInput = document.createElement("input");
+
+    nameInput.value = user.name;
+    roleInput.value = user.role;
+
+    nameCell.innerHTML = "";
+    roleCell.innerHTML = "";
+
+    nameCell.appendChild(nameInput);
+    roleCell.appendChild(roleInput);
+
+    editBtn.textContent = "Save";
+    deleteBtn.textContent = "Cancel";
+
+    //handle cancel functionality 
+    deleteBtn.onclick = fetchUsers;
+
+    //handle sedit save functionality(PUT)
+    editBtn.onclick = ()=>{
+        handleSaveUser(nameInput,roleInput,user.id);
+        fetchUsers();
+    };
+}
+
+function handleSaveUser(nameInput, roleInput,id){
+    const updatedUser = {
+        name: nameInput.value,
+        role: roleInput.value
+    };
+
+    return fetch(`http://localhost:18080/users/${id}`, 
+        {method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body:JSON.stringify(updatedUser)
+        })
+        .then(() => {
+            fetchUsers();
         });
 }
 
