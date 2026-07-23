@@ -9,7 +9,11 @@ add_executable(
     src/main.cpp
     src/json_utils.cpp
     src/routes.cpp
+    src/database.cpp
 )
+
+target_link_libraries(rest_api sqlite3)
+
 target_include_directories(rest_api PRIVATE
     include
     /home/soham/Crow/include
